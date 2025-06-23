@@ -24,3 +24,16 @@ class ShipMap:
         if 0 <= y < len(self.grid) and 0 <= x < len(self.grid[0]):
             return self.grid[y][x]
         return None
+    
+    def connect_rooms(self, room1_coordinates: tuple[int, int], room2_coordinates: tuple[int, int]) -> None:
+        room1: IRoom = self.get_room(*room1_coordinates)
+        room2: IRoom = self.get_room(*room2_coordinates)
+        if room1 and room2:
+            room1.connect(room2)
+
+    def connect_rooms_vents(self, room1_coordinates: tuple[int, int], room2_coordinates: tuple[int, int]) -> None:
+        room1: IRoom = self.get_room(*room1_coordinates)
+        room2: IRoom = self.get_room(*room2_coordinates)
+        if room1 and room2:
+            room1.connect_vent(room2)
+

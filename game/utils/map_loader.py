@@ -2,7 +2,8 @@ from typing import List, Dict
 from ..core.ship_map import ShipMap
 from ..core.room import Room
 from ..enums.room_type import RoomType
-
+from collections import defaultdict
+from typing import List
 
 ROOM_TYPE_MAPPING: Dict[str, RoomType] = {
     "1": RoomType.BRIDGE,
@@ -10,7 +11,7 @@ ROOM_TYPE_MAPPING: Dict[str, RoomType] = {
     "3": RoomType.GREENHOUSE,
     "4": RoomType.MEDBAY,
     "5": RoomType.POWER_GENERATOR,
-    "6": RoomType.OXYGEN_GENERATOR,
+    "6": RoomType.OXYGEN_GENERATOR, 
     "7": RoomType.GENERIC
 }
 
@@ -30,7 +31,7 @@ def create_map_from_text(layout: List[str]) -> ShipMap:
             if char not in ROOM_TYPE_MAPPING:
                 raise ValueError(f"Invalid room type symbol: '{char}' at ({x}, {y})")
             room_type = ROOM_TYPE_MAPPING[char]
-            room_name = f"{room_type.value} ({x},{y})"
+            room_name = f"{room_type.value}"
             room = Room(room_name, x, y, room_type)
             ship_map.add_room(room)
             room_grid[y][x] = room
@@ -49,3 +50,8 @@ def create_map_from_text(layout: List[str]) -> ShipMap:
                         room.connect(neighbor)
 
     return ship_map
+
+
+def create_vents_from_list(smap: ShipMap, layout: List[tuple[tuple[int, int], tuple[int, int]]]) -> None:
+    for room1_coords, room2_coords in layout:
+        smap.connect_rooms_vents(room1_coords, room2_coords)

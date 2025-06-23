@@ -8,7 +8,7 @@ class Room(IRoom):
         self._x: int = x
         self._y: int = y
         self._room_type: RoomType = room_type
-        self._connections: List[List[IRoom, bool]] = []
+        self._connections: List[IRoom] = []
         self._vent_connections: List[IRoom] = []
         self._has_vent: bool = False
         self.broken: bool = False
@@ -48,7 +48,7 @@ class Room(IRoom):
 
     def connect(self, other: IRoom) -> None:
         if other not in self._connections:
-            self._connections.append([other, True]) # TODO: Add connection status change
+            self._connections.append(other) # TODO: Add connection status change
             other.connect(self)
 
     def connect_vent(self, other: IRoom) -> None:
