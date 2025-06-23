@@ -1,11 +1,11 @@
 from enum import Enum
 
 class RoomType(Enum):
-    GENERIC = "Generic"
     BRIDGE = "Bridge"
-    MEDBAY = "Medbay"
+    LIVING_QUARTERS = "LivingQuarters"
     GREENHOUSE = "Greenhouse"
-    GENERATOR = "Generator"
-    OXYGEN = "Oxygen"
-    LIVING = "Living"
+    MEDBAY = "Medbay"
+    POWER_GENERATOR = "PowerGenerator"
+    OXYGEN_GENERATOR = "OxygenGenerator"
     CORRIDOR = "Corridor"
+    GENERIC = "Generic"

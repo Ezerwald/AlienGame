@@ -1,6 +1,6 @@
 from typing import List, Tuple
-from interfaces import IRoom
-from enums import RoomType 
+from ..interfaces import IRoom
+from ..enums import RoomType 
 
 class Room(IRoom):
     def __init__(self, name: str, x: int, y: int, room_type: RoomType = RoomType.GENERIC):
@@ -8,7 +8,7 @@ class Room(IRoom):
         self._x: int = x
         self._y: int = y
         self._room_type: RoomType = room_type
-        self._connections: List[IRoom] = []
+        self._connections: List[List[IRoom, bool]] = []
         self._vent_connections: List[IRoom] = []
         self._has_vent: bool = False
         self.broken: bool = False
@@ -16,6 +16,15 @@ class Room(IRoom):
     @property
     def name(self) -> str:
         return self._name
+
+    @property
+    def x(self) -> int:
+        return self._x
+
+    @property
+    def y(self) -> int:
+        return self._y
+
 
     @property
     def coordinates(self) -> Tuple[int, int]:
@@ -39,7 +48,7 @@ class Room(IRoom):
 
     def connect(self, other: IRoom) -> None:
         if other not in self._connections:
-            self._connections.append(other)
+            self._connections.append([other, True]) # TODO: Add connection status change
             other.connect(self)
 
     def connect_vent(self, other: IRoom) -> None:

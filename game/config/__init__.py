@@ -1,0 +1,11 @@
+from .constants import MAP_WIDTH, MAP_HEIGHT
+from ..graphics.renderer_constants import (
+    ROOM_SIZE,
+    MARGIN,
+    ROOM_COLOR,
+    TEXT_COLOR,
+    CORRIDOR_COLOR,
+    VENT_COLOR,
+    CREW_COLOR,
+    ALIEN_COLOR
+)

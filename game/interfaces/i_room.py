@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from enums import RoomType
+from ..enums import RoomType
 from typing import List, Tuple
 
 
@@ -7,6 +7,16 @@ class IRoom(ABC):
     @property
     @abstractmethod
     def name(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def x(self) -> int:
+        ...
+
+    @property
+    @abstractmethod
+    def y(self) -> int:
         ...
 
     @property
