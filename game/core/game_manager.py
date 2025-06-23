@@ -10,7 +10,7 @@ from ..interfaces import ICrewMember, IAlien
 from ..utils.map_loader import create_map_from_text, create_vents_from_list
 import pygame
 from pygame.locals import QUIT
-from ..config import ROOM_SIZE, MARGIN
+from ..config import ROOM_SIZE, MARGIN, ROOM_LAYOUT, VENT_LAYOUT
 
 
 class GameManager:
@@ -24,21 +24,9 @@ class GameManager:
         self.alien: IAlien = Alien(self.map.get_room(2, 2))
 
     def _create_map(self) -> ShipMap:
-        layout = [
-            "12203",
-            "20703",
-            "46523",
-            "00060",
-            "00540",
-        ]
 
-        vent_layout = [
-            ((2, 0), (4, 2)),
-            ((1, 0), (2, 3)),
-        ]
-
-        smap = create_map_from_text(layout)
-        create_vents_from_list(smap, vent_layout)
+        smap = create_map_from_text(ROOM_LAYOUT)
+        create_vents_from_list(smap, VENT_LAYOUT)
 
         return smap
 

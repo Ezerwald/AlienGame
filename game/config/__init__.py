@@ -9,3 +9,5 @@ from ..graphics.renderer_constants import (
     CREW_COLOR,
     ALIEN_COLOR
 )
+
+from .map_layout import ROOM_LAYOUT, VENT_LAYOUT
