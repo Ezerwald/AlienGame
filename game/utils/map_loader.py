@@ -3,7 +3,8 @@ from ..core.ship_map import ShipMap
 from ..core.room import Room
 from ..enums.room_type import RoomType
 from collections import defaultdict
-from typing import List
+from typing import List, Optional
+from ..interfaces import IRoom
 
 ROOM_TYPE_MAPPING: Dict[str, RoomType] = {
     "1": RoomType.BRIDGE,
@@ -21,7 +22,7 @@ def create_map_from_text(layout: List[str]) -> ShipMap:
     width = max(len(row) for row in layout)
     ship_map = ShipMap(width, height)
 
-    room_grid: List[List[Room | None]] = [[None for _ in range(width)] for _ in range(height)]
+    room_grid: List[List[Optional[IRoom]]] = [[None for _ in range(width)] for _ in range(height)]
 
     # Create room instances
     for y, row in enumerate(layout):
@@ -34,18 +35,17 @@ def create_map_from_text(layout: List[str]) -> ShipMap:
             room_name = f"{room_type.value}"
             room = Room(room_name, x, y, room_type)
             ship_map.add_room(room)
-            room_grid[y][x] = room
 
     # Connect adjacent rooms (up, down, left, right)
     for y in range(height):
         for x in range(width):
-            room = room_grid[y][x]
+            room = ship_map.room_grid[y][x]
             if not room:
                 continue
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 nx, ny = x + dx, y + dy
                 if 0 <= ny < height and 0 <= nx < width:
-                    neighbor = room_grid[ny][nx]
+                    neighbor = ship_map.room_grid[ny][nx]
                     if neighbor:
                         room.connect(neighbor)
 
