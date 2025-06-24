@@ -9,7 +9,8 @@ from ..interfaces import ICrewMember, IAlien
 from ..utils.map_loader import create_map_from_text, create_vents_from_list
 import pygame
 from pygame.locals import QUIT
-from ..config import ROOM_SIZE, MARGIN, ROOM_LAYOUT, VENT_LAYOUT
+from ..config import ROOM_LAYOUT, VENT_LAYOUT
+from ..graphics import ROOM_SIZE, MARGIN
 
 
 class GameManager:

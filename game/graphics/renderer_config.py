@@ -1,5 +1,5 @@
 # Constants for rendering
-ROOM_SIZE: int = 120
+ROOM_SIZE: int = 150
 MARGIN: int = 20
 CORRIDOR_WIDTH: int = 6
 VENT_WIDTH: int = 2
