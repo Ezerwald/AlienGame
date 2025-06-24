@@ -5,7 +5,6 @@ from ..enums import RoomType
 from .crew_member import CrewMember
 from .alien import Alien
 from ..graphics import render_map
-from ..config import MAP_WIDTH, MAP_HEIGHT
 from ..interfaces import ICrewMember, IAlien
 from ..utils.map_loader import create_map_from_text, create_vents_from_list
 import pygame
@@ -17,11 +16,11 @@ class GameManager:
     def __init__(self):
         self.map: ShipMap = self._create_map()
         self.crew: List[ICrewMember] = [
-            CrewMember("Alice", self.map.get_room(0, 0)),
-            CrewMember("Bob", self.map.get_room(1, 0)),
-            CrewMember("Charlie", self.map.get_room(0, 1)),
+            CrewMember("Alice", self.map.get_room_by_coordinates(0, 0)),
+            CrewMember("Bob", self.map.get_room_by_coordinates(1, 0)),
+            CrewMember("Charlie", self.map.get_room_by_coordinates(0, 1)),
         ]
-        self.alien: IAlien = Alien(self.map.get_room(2, 2))
+        self.alien: IAlien = Alien(self.map.get_room_by_coordinates(2, 2))
 
     def _create_map(self) -> ShipMap:
 

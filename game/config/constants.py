@@ -1,2 +1,0 @@
-MAP_WIDTH = 5
-MAP_HEIGHT = 5
