@@ -2,18 +2,35 @@ from typing import Optional
 from ..interfaces import IAlien, IActor
 from ..enums import ActorType
 from .room import Room
+from ..config import ALIEN_BASE_INITIATIVE
 
 class Alien(IAlien):
     def __init__(self, start_room: Optional[Room]):
         self._room: Optional[Room] = start_room
         self._health: int = 10
         self._biomass: int = 20
+        self._base_initiative: int = ALIEN_BASE_INITIATIVE
+        self._initiative_modifier: int = 0
 
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
         return "Alien"
 
-    def get_room(self) -> Optional[Room]:
+    @property
+    def room(self) -> Optional[Room]:
         return self._room
+
+    @property
+    def base_initiative(self) -> int:
+        return self._base_initiative
+    
+    @property
+    def initiative_modifier(self) -> int:
+        return self._initiative_modifier
+    
+    @initiative_modifier.setter
+    def initiative_modifier(self, value: int) -> None:
+        self._initiative_modifier = value
 
     def move_to(self, room: Room) -> None:
         self._room = room
@@ -36,9 +53,10 @@ class Alien(IAlien):
     def biomass(self) -> int:
         return self._biomass
 
-
     def attack(self, target: IActor) -> None:
         if hasattr(target, 'take_damage'):
             target.take_damage(2)  # TODO: Improve damage calculation
 
+    def reset_initiative_modifier(self) -> None:
+        self._initiative_modifier = 0
     

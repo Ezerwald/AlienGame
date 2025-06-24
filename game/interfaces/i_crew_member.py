@@ -3,8 +3,9 @@ from .i_actor import IActor
 from ..enums import SkillType
 
 class ICrewMember(IActor, ABC):
+    @property
     @abstractmethod
-    def get_skills(self) -> list[SkillType]:
+    def skills(self) -> list[SkillType]:
         pass
 
     @abstractmethod

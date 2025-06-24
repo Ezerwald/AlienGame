@@ -67,7 +67,7 @@ def _draw_vent_connections(screen: pygame.Surface, room: Room) -> None:
 
 
 def _draw_actor(screen: pygame.Surface, actor: IActor) -> None:
-    room = actor.get_room()
+    room = actor.room
     if not room:
         return
     x = room.x * ROOM_SIZE + ROOM_SIZE // 2 + MARGIN
