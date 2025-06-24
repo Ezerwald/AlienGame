@@ -1,5 +1,6 @@
 from typing import List, Optional
 from ..interfaces import IRoom
+from ..enums import RoomType
 
 class ShipMap:
     def __init__(self, width: int, height: int):
@@ -23,12 +24,12 @@ class ShipMap:
     def add_room(self, room: IRoom) -> None:
         self.handle_duplicate_room(room)
         self.rooms.append(room)
-        self.room_grid[room.coordinates[0]][room.coordinates[1]] = room
+        self.room_grid[room.x][room.y] = room
 
     def handle_duplicate_room(self, room: IRoom) -> None:
         count = self.get_room_count_by_type(room.room_type)
         if count >= 1:
-            get_room = (self.get_room_by_name(room.name))[-1] if self.get_room_by_name(room.name) else None
+            get_room = (self.get_room_by_type(room.room_type))[-1] if self.get_room_by_type(room.room_type) else None
             # If a room with the same name exists, rename it to avoid duplicates
             if get_room is not None:
                 get_room.name = f"{room.name} {count}"
@@ -46,7 +47,14 @@ class ShipMap:
                 result.append(room)
         return result if result else None
     
-    def get_room_count_by_type(self, room_type: IRoom) -> int:
+    def get_room_by_type(self, room_type: RoomType) -> Optional[List[IRoom]]:
+        result: List[IRoom] = []
+        for room in self.rooms:
+            if room.room_type == room_type:
+                result.append(room)
+        return result if result else None
+
+    def get_room_count_by_type(self, room_type: RoomType) -> int:
         return sum(1 for room in self.rooms if room.room_type == room_type)
 
     def connect_rooms(self, room1_coordinates: tuple[int, int], room2_coordinates: tuple[int, int]) -> None:
