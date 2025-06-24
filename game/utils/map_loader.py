@@ -7,8 +7,6 @@ from typing import List, Optional
 from ..interfaces import IRoom
 from .map_loader_config import ROOM_TYPE_MAPPING
 
-
-
 def create_map_from_text(layout: List[str]) -> ShipMap:
     height = len(layout)
     width = max(len(row) for row in layout)
