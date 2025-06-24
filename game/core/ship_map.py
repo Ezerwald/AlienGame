@@ -5,7 +5,7 @@ class ShipMap:
     def __init__(self, width: int, height: int):
         self._width: int = width
         self._height: int = height
-        self.grid: List[List[Optional[IRoom]]] = [[None for _ in range(width)] for _ in range(height)]
+        self._room_grid: List[List[Optional[IRoom]]] = [[None for _ in range(width)] for _ in range(height)]
         self.rooms: List[IRoom] = []
 
     @property
@@ -15,16 +15,23 @@ class ShipMap:
     @property
     def height(self) -> int:
         return self._height
+    
+    @property
+    def room_grid(self) -> List[List[Optional[IRoom]]]:
+        return self._room_grid
 
     def add_room(self, room: IRoom) -> None:
         self.rooms.append(room)
-        self.grid[room.coordinates[0]][room.coordinates[1]] = room
+        self.room_grid[room.coordinates[0]][room.coordinates[1]] = room
 
     def get_room(self, x: int, y: int) -> Optional[IRoom]:
-        if 0 <= y < len(self.grid) and 0 <= x < len(self.grid[0]):
-            return self.grid[y][x]
+        if 0 <= y < len(self.room_grid) and 0 <= x < len(self.room_grid[0]):
+            return self.room_grid[y][x]
         return None
     
+    def get_room_count_by_type(self, room_type: IRoom) -> int:
+        return sum(1 for room in self.rooms if room.room_type == room_type)
+
     def connect_rooms(self, room1_coordinates: tuple[int, int], room2_coordinates: tuple[int, int]) -> None:
         room1: IRoom = self.get_room(*room1_coordinates)
         room2: IRoom = self.get_room(*room2_coordinates)
