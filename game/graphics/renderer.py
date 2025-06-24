@@ -5,7 +5,7 @@ from game.interfaces.i_actor import IActor
 from game.core.alien import Alien
 from game.enums.actor_type import ActorType
 from game.core.room import Room
-from .renderer_constants import (
+from .renderer_config import (
     ROOM_SIZE,
     MARGIN,
     CORRIDOR_WIDTH,

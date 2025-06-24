@@ -1,5 +1,5 @@
 from .constants import MAP_WIDTH, MAP_HEIGHT
-from ..graphics.renderer_constants import (
+from ..graphics.renderer_config import (
     ROOM_SIZE,
     MARGIN,
     ROOM_COLOR,
