@@ -13,6 +13,7 @@ class CrewMember(ICrewMember):
         self._skills: list[SkillType] = skills or []
         self._base_initiative: int = CREW_MEMBER_BASE_INITIATIVE
         self._initiative_modifier: int = 0
+        self._actor_type: ActorType = ActorType.CREW
 
     @property
     def name(self) -> str:
@@ -38,14 +39,16 @@ class CrewMember(ICrewMember):
     def initiative_modifier(self, value: int) -> None:
         self._initiative_modifier = value
 
+    @property
+    def actor_type(self) -> ActorType:
+        print(self._actor_type)
+        return self._actor_type
+
     def move_to(self, room: Room) -> None:
         self._room = room
 
     def is_alive(self) -> bool:
         return self._health > 0
-
-    def get_actor_type(self) -> ActorType:
-        return ActorType.CREW
     
     def take_damage(self, amount: int) -> None:
         self._health = max(0, self._health - amount)

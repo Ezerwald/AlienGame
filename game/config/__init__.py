@@ -2,4 +2,6 @@ from .map_layout import ROOM_LAYOUT, VENT_LAYOUT
 from .constants import (
     CREW_MEMBER_BASE_INITIATIVE,
     ALIEN_BASE_INITIATIVE,
+    MAX_CREW_MEMBER_ACTIONS,
+    MAX_ALIEN_ACTIONS,
 )

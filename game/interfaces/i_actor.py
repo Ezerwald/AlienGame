@@ -29,16 +29,17 @@ class IActor(ABC):
     def initiative_modifier(self, value: int) -> None:
         pass
 
+    @property    
+    @abstractmethod
+    def actor_type(self) -> ActorType:
+        pass
+
     @abstractmethod
     def move_to(self, room: IRoom) -> None:
         pass
 
     @abstractmethod
     def is_alive(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_actor_type(self) -> ActorType:
         pass
 
     @abstractmethod

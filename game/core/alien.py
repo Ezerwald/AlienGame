@@ -11,6 +11,7 @@ class Alien(IAlien):
         self._biomass: int = 20
         self._base_initiative: int = ALIEN_BASE_INITIATIVE
         self._initiative_modifier: int = 0
+        self._actor_type: ActorType = ActorType.ALIEN
 
     @property
     def name(self) -> str:
@@ -32,14 +33,15 @@ class Alien(IAlien):
     def initiative_modifier(self, value: int) -> None:
         self._initiative_modifier = value
 
+    @property
+    def actor_type(self) -> ActorType:
+        return self._actor_type
+
     def move_to(self, room: Room) -> None:
         self._room = room
 
     def is_alive(self) -> bool:
         return self._health > 0
-
-    def get_actor_type(self) -> ActorType:
-        return ActorType.ALIEN
 
     def use_biomass(self, amount: int) -> None:
         if amount > self._biomass:
