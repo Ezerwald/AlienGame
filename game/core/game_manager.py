@@ -1,6 +1,8 @@
 from typing import List, Dict
 import pygame
 from pygame.locals import QUIT
+
+from ..utils import log_error
 from ..graphics import render_map, ROOM_SIZE, MARGIN
 from ..config import ROOM_LAYOUT, VENT_LAYOUT, MAX_CREW_MEMBER_ACTIONS, MAX_ALIEN_ACTIONS
 from ..utils.map_loader import create_map_from_text, create_vents_from_list
@@ -115,7 +117,7 @@ class GameManager:
 
             if remaining <= 0:
                 show_menu = False
-                print(f"{member.name} has no remaining actions.")
+                log_error(f"{member.name} has no remaining actions.")
                 break
 
             if choice == "1":
@@ -188,7 +190,7 @@ class GameManager:
                 idx = int(choice) - 1
                 if 0 <= idx < len(neighbors):
                     if remaining <= 0:
-                        print(f"{actor.name} has no movement actions left.")
+                        log_error(f"{actor.name} has no movement actions left.")
                         break
                     room = neighbors[idx]
                     self.turn_manager.plan_movement(actor, (room.x, room.y))
