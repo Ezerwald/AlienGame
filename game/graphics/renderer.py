@@ -18,14 +18,19 @@ from .renderer_config import (
     ALIEN_COLOR
 )
 
+x = ROOM_SIZE // 5
+# Offsets for actor rendering to avoid overlap
+actor_offsets = [(-x, -x), (-x, x), (x, x), (x, -x)]
+actor_collors = []
+
 def render_map(screen: pygame.Surface, font: pygame.font.Font, smap: ShipMap, crew: List[IActor], alien: Alien) -> None:
     screen.fill((0, 0, 0))  # Clear screen
 
     for room in smap.rooms:
         _draw_room(screen, font, room)
 
-    for actor in crew + [alien]:
-        _draw_actor(screen, actor)
+    for i, actor in enumerate(crew + [alien]):
+        _draw_actor(screen, actor, i, font)
 
     pygame.display.flip()
 
@@ -66,11 +71,13 @@ def _draw_vent_connections(screen: pygame.Surface, room: Room) -> None:
         pygame.draw.line(screen, VENT_COLOR, (x_center, y_center), (vx, vy), VENT_WIDTH)
 
 
-def _draw_actor(screen: pygame.Surface, actor: IActor) -> None:
+def _draw_actor(screen: pygame.Surface, actor: IActor, i: int, font) -> None:
     room = actor.room
     if not room:
         return
-    x = room.x * ROOM_SIZE + ROOM_SIZE // 2 + MARGIN
-    y = room.y * ROOM_SIZE + ROOM_SIZE // 2 + MARGIN
-    color = CREW_COLOR if actor.get_actor_type() == ActorType.CREW else ALIEN_COLOR
+    x = room.x * ROOM_SIZE + ROOM_SIZE // 2 + MARGIN + actor_offsets[i][0]
+    y = room.y * ROOM_SIZE + ROOM_SIZE // 2 + MARGIN + actor_offsets[i][1]
+    color = CREW_COLOR if actor.actor_type == ActorType.CREW else ALIEN_COLOR
+    name_text = font.render(actor.name, True, color)
+    screen.blit(name_text, (x-10, y - 20))
     pygame.draw.circle(screen, color, (x, y), 8)

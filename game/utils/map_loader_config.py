@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict
 from ..enums import RoomType
 
 ROOM_TYPE_MAPPING: Dict[str, RoomType] = {
