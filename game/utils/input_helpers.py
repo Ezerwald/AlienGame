@@ -1,7 +1,8 @@
-# utils/get_user_input.py
 import threading
 import queue
 import pygame
+import os
+import platform
 
 _input_queue = queue.Queue()
 
@@ -11,6 +12,13 @@ def _input_thread(prompt: str):
         _input_queue.put(user_input)
     except EOFError:
         _input_queue.put("")
+
+def clear_terminal():
+    # Cross-platform terminal clear
+    if platform.system() == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
 
 def get_user_input(prompt: str = "") -> str:
     input_thread = threading.Thread(target=_input_thread, args=(prompt,), daemon=True)
@@ -23,4 +31,6 @@ def get_user_input(prompt: str = "") -> str:
                 exit()
 
         if not _input_queue.empty():
-            return _input_queue.get()
+            user_input = _input_queue.get()
+            clear_terminal()  # Clear screen after input is received
+            return user_input

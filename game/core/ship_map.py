@@ -37,7 +37,7 @@ class ShipMap:
 
     def get_room_by_coordinates(self, x: int, y: int) -> Optional[IRoom]:
         if 0 <= y < len(self.room_grid) and 0 <= x < len(self.room_grid[0]):
-            return self.room_grid[y][x]
+            return self.room_grid[x][y]
         return None
     
     def get_room_by_name(self, name: str) -> Optional[List[IRoom]]:
