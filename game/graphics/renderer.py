@@ -46,8 +46,6 @@ def _draw_room_box_and_label(screen: pygame.Surface, font: pygame.font.Font, roo
     y: int = room.y * ROOM_SIZE + MARGIN
     rect = pygame.Rect(x, y, ROOM_SIZE, ROOM_SIZE)
 
-    print(f"Drawing room: {room.name} at ({room.x}, {room.y}) with rect {rect}")
-
     pygame.draw.rect(screen, ROOM_COLOR, rect, 2)
     name_text = font.render(f"{room.name} ({room.x}, {room.y})", True, TEXT_COLOR)
     screen.blit(name_text, (x + 4, y + 4))
