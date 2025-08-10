@@ -1,6 +1,7 @@
 from typing import List, Tuple
 from ..interfaces import IRoom
 from ..enums import RoomType 
+from .crew_actions import FixAction
 
 class Room(IRoom):
     def __init__(self, name: str, x: int, y: int, room_type: RoomType = RoomType.GENERIC):
@@ -11,7 +12,7 @@ class Room(IRoom):
         self._connections: List[IRoom] = []
         self._vent_connections: List[IRoom] = []
         self._has_vent: bool = False
-        self.broken: bool = False
+        self.damaged: bool = False
 
     @property
     def name(self) -> str:
@@ -28,7 +29,6 @@ class Room(IRoom):
     @property
     def y(self) -> int:
         return self._y
-
 
     @property
     def coordinates(self) -> Tuple[int, int]:
@@ -49,6 +49,7 @@ class Room(IRoom):
     @property
     def has_vent(self) -> bool:
         return self._has_vent
+        
 
     def connect(self, other: IRoom) -> None:
         if other not in self._connections:
@@ -61,3 +62,10 @@ class Room(IRoom):
         if other not in self._vent_connections:
             self._vent_connections.append(other)
             other.connect_vent(self)
+
+    def get_contextual_actions(self):
+        actions = []
+        if self.damaged:
+            actions.append(FixAction())
+        return actions
+
