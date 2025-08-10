@@ -4,7 +4,7 @@ from ..interfaces import ICrewMember, IAlien, IActor
 from .ship_map import ShipMap
 from ..config import MAX_CREW_MEMBER_ACTIONS, MAX_ALIEN_ACTIONS
 from ..enums import ActorType
-from ..interfaces import IRoom
+from ..interfaces import IRoom, IShipMap
 
 
 class TurnPhase(Enum):
@@ -39,14 +39,16 @@ class TurnManager:
     def plan_movement(self, actor: IActor, target_coords: Tuple[int, int]) -> None:
         if self.remaining_actions.get(actor.name, 0) > 0:
             self.movement_queue.setdefault(actor, []).append(target_coords)
-            self.remaining_actions[actor.name] -= 1
         else:
             print(f"{actor.name} has no remaining movement actions.")
 
     def get_remaining_actions(self, actor: IActor) -> int:
         return self.remaining_actions.get(actor.name, 0)
+    
+    def spend_actions(self, actor: IActor, cost: int) -> None:
+        self.remaining_actions[actor.name] = max(0, self.remaining_actions.get(actor.name, 0) - cost)
 
-    def resolve_movements(self, ship_map: ShipMap) -> None:
+    def resolve_movements(self, ship_map: IShipMap) -> None:
         self.phase = TurnPhase.RESOLUTION
         print("\nResolving movements...")
         step = 0

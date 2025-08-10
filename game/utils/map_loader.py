@@ -1,13 +1,11 @@
-from typing import List, Dict
-from ..core.ship_map import ShipMap
+from typing import List
 from ..core.room import Room
-from ..enums.room_type import RoomType
-from collections import defaultdict
+from ..core.ship_map import ShipMap
 from typing import List, Optional
-from ..interfaces import IRoom
+from ..interfaces import IRoom, IShipMap
 from .map_loader_config import ROOM_TYPE_MAPPING
 
-def create_map_from_text(layout: List[str]) -> ShipMap:
+def create_map_from_text(layout: List[str]) -> IShipMap:
     height = len(layout)
     width = max(len(row) for row in layout)
     ship_map = ShipMap(width, height)
