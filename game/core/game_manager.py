@@ -14,6 +14,7 @@ from .alien import Alien
 from .turn_manager import TurnManager
 from ..utils import show_actor_info, clear_terminal
 
+
 class GameManager:
     def __init__(self):
         self.map: ShipMap = self._create_map()
@@ -44,7 +45,6 @@ class GameManager:
 
             self._start_turn()
             self._action_phase()
-            self._movement_planning_phase()
             self._resolution_phase(screen, font)
 
             get_user_input("\n[Press Enter to continue to next turn]")
@@ -78,90 +78,62 @@ class GameManager:
 
         while True:
             print("\n--- ACTION PHASE ---")
-            print("\nChoose a crew member to command:")
+            print("\nChoose an actor to command:")
 
-            for idx, member in enumerate(self.crew):
-                remaining = self.turn_manager.get_remaining_actions(member)
-                print(f"{idx + 1}. {member.name} ({remaining}/{MAX_CREW_MEMBER_ACTIONS})")
-            print("0. Continue to movement planning")
-
-            choice = get_user_input("Your choice: ")
-
-            if choice == "0":
-                break
-            try:
-                idx = int(choice) - 1
-                if 0 <= idx < len(self.crew):
-                    member = self.crew[idx]
-                    remaining = self.turn_manager.get_remaining_actions(member)
-
-                    self._crew_action_menu(member)
-
-                else:
-                    print("Invalid selection.")
-            except ValueError:
-                print("Invalid input.")
-
-    def _crew_action_menu(self, member: ICrewMember):
-        show_actor_info(member)
-        show_menu = True
-
-        while show_menu:
-            remaining = self.turn_manager.get_remaining_actions(member)
-            print(f"\nActions remaining for {member.name} ({remaining}/{MAX_CREW_MEMBER_ACTIONS})")
-            print("1. Wait")
-            print("2. Do something else (placeholder)")
-            print("0. Finish")
-
-            choice = get_user_input("Choose action: ")
-
-            if remaining <= 0:
-                show_menu = False
-                log_error(f"{member.name} has no remaining actions.")
-                break
-
-            if choice == "1":
-                print(f"{member.name} waits.")
-                self.turn_manager.log_action(member, "Wait")
-            elif choice == "2":
-                print(f"{member.name} does something else.")
-                self.turn_manager.log_action(member, "Placeholder Action")
-            elif choice == "0":
-                break
-            else:
-                print("Unknown choice.")
-
-    def _movement_planning_phase(self):
-        while True:
-            print("\n--- MOVEMENT PLANNING PHASE ---")
-            print("\nChoose a crew member to plan movement:")
-
-            for idx, actor in enumerate(self.crew):  # Exclude alien
+            all_actors = self.crew + [self.alien]
+            for idx, actor in enumerate(all_actors):
                 remaining = self.turn_manager.get_remaining_actions(actor)
-                print(f"{idx + 1}. {actor.name} ({remaining}/{MAX_CREW_MEMBER_ACTIONS})")
-            print("0. Continue to resolution phase")
+                print(f"{idx + 1}. {actor.name} ({remaining}/{MAX_CREW_MEMBER_ACTIONS if actor.actor_type.name == 'CREW' else MAX_ALIEN_ACTIONS})")
+
+            print("0. End Action Phase")
 
             choice = get_user_input("Your choice: ")
 
             if choice == "0":
                 break
+
             try:
                 idx = int(choice) - 1
-                if 0 <= idx < len(self.crew):
-                    actor = self.crew[idx]
-                    self._movement_menu_for_actor(actor)
+                if 0 <= idx < len(all_actors):
+                    actor = all_actors[idx]
+                    self._actor_action_menu(actor)
                 else:
                     print("Invalid selection.")
             except ValueError:
                 print("Invalid input.")
 
-    def _movement_menu_for_actor(self, actor: IActor):
+    def _actor_action_menu(self, actor: IActor):
         show_actor_info(actor)
 
         while True:
             remaining = self.turn_manager.get_remaining_actions(actor)
-            print(f"\nMovement actions remaining for {actor.name} ({remaining}/{MAX_CREW_MEMBER_ACTIONS})")
+            if remaining <= 0:
+                log_error(f"{actor.name} has no remaining actions.")
+                break
 
+            print(f"\nActions remaining for {actor.name} ({remaining}/{MAX_CREW_MEMBER_ACTIONS if actor.actor_type.name == 'CREW' else MAX_ALIEN_ACTIONS})")
+            print("1. Move (plan for resolution)")
+            print("2. Wait (resolve immediately)")
+            print("3. Do something else (placeholder)")
+            print("0. Back to actor selection")
+
+            choice = get_user_input("Choose action: ")
+
+            if choice == "0":
+                break
+            elif choice == "1":
+                self._movement_menu_for_actor(actor)
+            elif choice == "2":
+                print(f"{actor.name} waits.")
+                self.turn_manager.log_action(actor, "Wait")
+            elif choice == "3":
+                print(f"{actor.name} does something else.")
+                self.turn_manager.log_action(actor, "Placeholder Action")
+            else:
+                print("Unknown choice.")
+
+    def _movement_menu_for_actor(self, actor: IActor):
+        while self.turn_manager.get_remaining_actions(actor) > 0:
             last_coords = (
                 self.turn_manager.movement_queue[actor][-1]
                 if self.turn_manager.movement_queue.get(actor)
@@ -173,32 +145,28 @@ class GameManager:
                 print(f"Error: could not find room at {last_coords}.")
                 return
 
-            print(f"Current destination room: {current_room.name}")
-
+            print(f"\n{actor.name} is in {current_room.name} ({current_room.x}, {current_room.y})")
+            print("Choose a connected room to move into:")
             neighbors = current_room.connections
 
-            print(f"\nMovement options for {actor.name}:")
             for idx, room in enumerate(neighbors):
                 print(f"{idx + 1}. {room.name} ({room.x}, {room.y})")
-            print("0. Finish planning for this crew member")
+            print("0. Stop moving and return to action menu")
 
-            choice = get_user_input("Choose room: ")
+            choice = get_user_input("Your choice: ")
 
             if choice == "0":
                 break
             try:
                 idx = int(choice) - 1
                 if 0 <= idx < len(neighbors):
-                    if remaining <= 0:
-                        log_error(f"{actor.name} has no movement actions left.")
-                        break
                     room = neighbors[idx]
                     self.turn_manager.plan_movement(actor, (room.x, room.y))
+                    print(f"Planned movement for {actor.name} to {room.name} ({room.x}, {room.y})")
                 else:
                     print("Invalid selection.")
             except ValueError:
                 print("Invalid input.")
-
 
     def _group_actors_by_initiative(self) -> Dict[int, List[IActor]]:
         all_actors = [a for a in self.crew if a.is_alive()] + [self.alien]
